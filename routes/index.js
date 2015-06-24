@@ -6,6 +6,9 @@ var moment = require('moment');
 var mongojs = require('mongojs');
 var db = mongojs('movies', ['movies']);
 
+var api = 'http://api.themoviedb.org/3/movie/';
+var apiKey = '?api_key=27cfec6c9eb8080cb7d8025ba420e2d7';
+
 function isInteger(str) {
   return /^\+?(0|[1-9]\d*)$/.test(str);
 }
@@ -20,8 +23,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/latest', function(req, res, next) {
-  var skip = !req.query.skip ? 0 : parseFloat(req.query.skip);
-  var take = !req.query.take ? 10 : parseFloat(req.query.take);
+  var skip = !req.query.skip ? 0 : parseInt(req.query.skip, 10);
+  var take = !req.query.take ? 10 : parseInt(req.query.take, 10);
 
   db.movies.find().limit(take).skip(skip).sort({last_watched:-1}, function(err, data) {
     if (err) return next(err);
@@ -69,7 +72,34 @@ router.post('/add', function(req, res, next) {
         res.send('Movie updated!');
       });
     } else {
-      res.send('Nope');
+      request(api + id + apiKey, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          var data = JSON.parse(body);
+          db.movies.save({
+            title: data.original_title,
+            last_watched: date,
+            plays: 1,
+            year: moment(data.release_date).format('YYYY'),
+            ids: {
+              tmdb: id,
+              imfb: data.imdb_id
+            },
+            rating: rating,
+            backdrop_path: data.backdrop_path,
+            genres: data.genres,
+            original_language: data.original_language,
+            info: data.overview,
+            poster_path: data.poster_path,
+            production_companies: data.production_companies,
+            release_date: data.release_date,
+            runtime: data.runtime,
+            tagline: data.tagline
+          }, function(err, saved) {
+            if (err) return next(err);
+            res.send(saved);
+          });
+        }
+      });
     }
   });
 });
