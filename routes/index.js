@@ -74,15 +74,14 @@ router.post('/add', function(req, res, next) {
     } else {
       request(api + id + apiKey, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-          var data = JSON.parse(body);
           db.movies.save({
             title: data.original_title,
             last_watched: date,
             plays: 1,
-            year: moment(data.release_date).format('YYYY'),
+            year: parseInt(moment(data.release_date).format('YYYY'), 10),
             ids: {
-              tmdb: id,
-              imfb: data.imdb_id
+              tmdb: parsedId,
+              imdb: data.imdb_id
             },
             rating: rating,
             backdrop_path: data.backdrop_path,
