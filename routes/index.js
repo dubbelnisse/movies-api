@@ -31,8 +31,6 @@ router.get('/latest', function(req, res, next) {
   });
 });
 
-
-
 router.post('/add', function(req, res, next) {
   var id = req.query.id;
   var rating = req.query.rating;
