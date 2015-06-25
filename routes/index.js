@@ -17,8 +17,7 @@ function isInteger(str) {
 router.get('/', function(req, res, next) {
   db.movies.find(function(err, data) {
     if (err) return next(err);
-    console.log(data.length);
-    res.json(data);
+    res.sendStatus(data.length);
   });
 });
 
@@ -28,10 +27,11 @@ router.get('/latest', function(req, res, next) {
 
   db.movies.find().limit(take).skip(skip).sort({last_watched:-1}, function(err, data) {
     if (err) return next(err);
-    console.log(data.length);
     res.json(data);
   });
 });
+
+
 
 router.post('/add', function(req, res, next) {
   var id = req.query.id;
@@ -73,6 +73,7 @@ router.post('/add', function(req, res, next) {
       });
     } else {
       request(api + id + apiKey, function (error, response, body) {
+        data = JSON.parse(body);
         if (!error && response.statusCode == 200) {
           db.movies.save({
             title: data.original_title,
