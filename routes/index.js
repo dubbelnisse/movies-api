@@ -36,8 +36,6 @@ router.post('/add', function(req, res, next) {
   var rating = req.query.rating;
   var date = req.query.date;
 
-  var parsedId = parseInt(id, 10);
-
   if (!id || !rating) {
     return res.send('Missing a parameter!');
   }
@@ -54,7 +52,7 @@ router.post('/add', function(req, res, next) {
     date = moment().format();
   }
 
-  db.movies.findOne({$or: [{'ids.tmdb': parsedId}, {'ids.imdb': id}]}, function(err, data) {
+  db.movies.findOne({$or: [{'ids.tmdb': id}, {'ids.imdb': id}]}, function(err, data) {
     if (err) return next(err);
     if (data) {
       var updateedPlays = data.plays + 1;
@@ -79,7 +77,7 @@ router.post('/add', function(req, res, next) {
             plays: 1,
             year: parseInt(moment(data.release_date).format('YYYY'), 10),
             ids: {
-              tmdb: parsedId,
+              tmdb: data.id.toString(),
               imdb: data.imdb_id
             },
             rating: rating,
