@@ -52,12 +52,14 @@ router.post('/', function(req, res, next) {
         }
       }, function(err, updated) {
         if( err || !updated ) console.log('Oooops');
-        res.send('Movie updated!');
+        res.status(200).send('Great! Movie has been added!');
       });
     } else {
       request(api + id + apiKey, function (error, response, body) {
         data = JSON.parse(body);
-        if (!error && response.statusCode == 200) {
+        if (!error && response.statusCode == 404) {
+          return res.status(404).send('No movie found with that ID');
+        } else if (!error && response.statusCode == 200) {
           db.movies.save({
             title: data.original_title,
             last_watched: date,
@@ -79,7 +81,7 @@ router.post('/', function(req, res, next) {
             tagline: data.tagline
           }, function(err, saved) {
             if (err) return next(err);
-            res.send(saved);
+            res.status(200).send('Great! Movie has been added!');
           });
         }
       });
