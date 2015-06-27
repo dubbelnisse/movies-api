@@ -2,13 +2,15 @@ var express = require('express');
 var router = express.Router();
 
 var mongojs = require('mongojs');
-var db = mongojs(process.env.MOVIES_MONGO_URL, [process.env.MOVIES_MOVIES]);
+var db = mongojs(process.env.MOVIES_MONGO_URL, [process.env.MOVIES_USERS]);
 
-/* GET root */
+var bcrypt = require('bcrypt');
+
+/* GET users */
 router.get('/', function(req, res, next) {
-  db.movies.find(function(err, data) {
+  db.users.find(function(err, users) {
     if (err) return next(err);
-    res.send(data);
+      res.send(users);
   });
 });
 

@@ -4,7 +4,7 @@ var request = require('request');
 var moment = require('moment');
 
 var mongojs = require('mongojs');
-var db = mongojs('movies', ['movies']);
+var db = mongojs(process.env.MOVIES_MONGO_URL, [process.env.MOVIES_MOVIES]);
 
 var api = 'http://api.themoviedb.org/3/movie/';
 var apiKey = '?api_key=27cfec6c9eb8080cb7d8025ba420e2d7';

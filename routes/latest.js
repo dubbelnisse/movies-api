@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var mongojs = require('mongojs');
-var db = mongojs('movies', ['movies']);
+var db = mongojs(process.env.MOVIES_MONGO_URL, [process.env.MOVIES_MOVIES]);
 
 /* GET latest */
 router.get('/', function(req, res, next) {
