@@ -19,16 +19,20 @@ router.post('/', function(req, res, next) {
   var rating = req.query.rating;
   var date = req.query.date;
 
-  if (!id || !rating) {
-    return res.send('Missing a parameter!');
+  if (!id) {
+    return res.status(400).send('ID is mandatory');
+  }
+
+  if (!rating) {
+    return res.status(400).send('Rating is mandatory');
   }
   
   if (rating > 10) {
-    return res.send('Maximum rating is 10!');
+    return res.status(400).send('Maximum rating is 10');
   }
 
   if (!isInteger(rating)) {
-    return res.send('Only integer!');
+    return res.status(400).send('Only integers in ratings');
   }
 
   if (!date) {

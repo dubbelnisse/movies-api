@@ -10,9 +10,8 @@ router.get('/', function(req, res, next) {
   var take = !req.query.take ? 10 : parseInt(req.query.take, 10);
 
   db.movies.find().limit(take).skip(skip).sort({last_watched:-1}, function(err, data) {
-    console.log(err);
     if (err) return next(err);
-    res.json(data);
+    res.send(data);
   });
 });
 
