@@ -20,7 +20,11 @@ function register(email, password, callback) {
           password: hash
         }, function(err, saved) {
           if (err) return next(err);
-          return callback(saved);
+          var clean = {
+            email: saved.email,
+            password: saved.password
+          }
+          return callback(clean);
         });
       }
   });
