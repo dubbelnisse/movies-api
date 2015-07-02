@@ -11,15 +11,23 @@ function auth(email, password, callback) {
     if (err) return next(err);
       if (user) {
         if (bcrypt.compareSync(password, user.password)) {
+          console.log(user);
           return callback({
+            code: 200,
             message: 'logged in',
-            hash: user.password
+            email: user.email
           });
         } else {
-          return callback('wrong password');
+          return callback({
+            code: 400,
+            message: 'wrong password',
+          });
         }
       } else {
-        return callback('no user found');
+        return callback({
+          code: 404,
+          message: 'no user found',
+        });
       }
   });
 }
