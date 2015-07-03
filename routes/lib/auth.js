@@ -10,12 +10,12 @@ function auth(email, password, callback) {
   db.users.findOne({'email': email}, function(err, user) {
     if (err) return next(err);
       if (user) {
-        if (bcrypt.compareSync(password, user.password)) {
+        if (bcrypt.compareSync(password, user.hash)) {
           console.log(user);
           return callback({
             code: 200,
             message: 'logged in',
-            email: user.email
+            hash: user.hash
           });
         } else {
           return callback({

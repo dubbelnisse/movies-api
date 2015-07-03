@@ -10,16 +10,17 @@ var db = mongojs(process.env.MOVIES_MONGO_URL, [process.env.MOVIES_USERS]);
 
 /* POST login */
 router.post('/', function(req, res, next) {
-  var email = req.query.email;
-
-  if(!email) {
+  var hash = req.query.hash;
+  console.log(hash);
+  if(!hash) {
     return res.send({
       code: 400,
-      message: 'email missing',
+      message: 'hash missing',
     });
   }
 
-  db.users.findOne({'email': email}, function(err, user) {
+  db.users.findOne({'hash': hash}, function(err, user) {
+    console.log(user);
     if (err) return next(err);
       if (user) {
         return res.send({
